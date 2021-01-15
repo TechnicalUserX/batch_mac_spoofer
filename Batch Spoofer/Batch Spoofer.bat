@@ -249,6 +249,7 @@ title Batch Spoofer 1.0.0 - Developed By TUX
 	echo.
 	echo    - revert            : Revert MAC address to original
 	echo    - randomize mac     : Randomize MAC Address
+	echo    - define mac        : Set MAC Manually
 	echo    - exit              : Exit MAC Spoofing screen
 	echo.
 	echo  [--------------------------------------------------------------------------------------------------------------------------]
@@ -286,7 +287,7 @@ title Batch Spoofer 1.0.0 - Developed By TUX
 		reg delete !interface_registry_location! /v NetworkAddress /f >nul
 		echo  Enabling "!interface_description!"...
 		netsh interface set interface name="!interface_id!" admin=enabled >nul
-		call colorchar.exe /0a " Completed."
+		call colorchar.exe /0a " Completed"
 		timeout /t 3 >nul
 		set macspoofingchoice=
 		cls
@@ -296,7 +297,86 @@ title Batch Spoofer 1.0.0 - Developed By TUX
 	
 	)
 	
+	if "!macspoofingchoice!"=="define mac" (
+		set allowed_mac_char_list_obliged=EA26
+		set allowed_mac_char_list=0123456789ABCDEF
+		cls
+		echo.
+		echo  Type the MAC without semicolons
+		echo.
+		echo  [-------------------------------------------------------------------------]
+		call colorchar.exe /0f "   Example format: "
+		call colorchar.exe /0a "AABBCCDDEEFF"
+		echo.
+		call colorchar.exe /0e "   WARNING: Second character of the MAC should be one of these {E, A, 2, 6 }
+		echo.
+		call colorchar.exe /0c "   This is a Windows restriction"
+		echo.
+		echo  [-------------------------------------------------------------------------]
+		echo.
+		call colorchar.exe /0e " define"
+		call colorchar.exe /0f "@"
+		call colorchar.exe /08 "mac"
+		call colorchar.exe /0f "[]-"
+		set /p manual_mac=
 	
+		call :create_string manual_mac_check "!manual_mac!"
+		
+		if  !manual_mac_check_length! neq 12 (
+			call colorchar.exe /0c " Length of a MAC must be 12 characters."
+			timeout /t 3 >nul
+			set macspoofingchoice=
+			cls
+			goto :interface_management	
+		)
+		
+		
+		
+		for /l %%a in ( 0, 1, 11) do (
+			
+			if "%%a" == "1" (
+			
+				if "!manual_mac_check:~%%a,1!" neq "E" if "!manual_mac_check:~%%a,1!" neq "e" if "!manual_mac_check:~%%a,1!" neq "A" if "!manual_mac_check:~%%a,1!" neq "a" if "!manual_mac_check:~%%a,1!" neq "6" if "!manual_mac_check:~%%a,1!" neq "2" (
+					call colorchar.exe /0c " Second character is not matching the criteria, please use E, A, 2, or 6
+					timeout /t 3 >nul
+					set macspoofingchoice=
+					cls
+					goto :interface_management				
+				)
+
+			)
+		
+			call :validate_mac_char "!manual_mac_check:~%%a,1!"
+			if "!valid!" == "false" (
+				call colorchar.exe /0c " Invalid character has been used"
+				timeout /t 3 >nul
+				set macspoofingchoice=
+				cls
+				goto :interface_management	
+			)
+		
+		
+		)
+		echo.
+		call colorchar.exe /0f " Defined MAC: "
+		call colorchar.exe /0a "!manual_mac!"
+		echo.
+
+		echo.
+		echo  Disabling "!interface_description!"...
+		netsh interface set interface name="!interface_id!" admin=disabled >nul	
+		echo  Applying new MAC Address...
+		reg add !interface_registry_location! /v NetworkAddress /t REG_SZ /d "!manual_mac!"
+		echo  Enabling "!interface_description!"...
+		netsh interface set interface name="!interface_id!" admin=enabled >nul
+		call colorchar.exe /0a " Completed"
+
+
+		timeout /t 3 >nul
+		set macspoofingchoice=
+		cls
+		goto :interface_management	
+	)
 	
 	
 	
@@ -304,6 +384,11 @@ title Batch Spoofer 1.0.0 - Developed By TUX
 	if "!macspoofingchoice!"=="randomize mac" (
 		echo.
 		echo  Generating a random MAC Address...
+		
+		
+		
+		
+		
 		call :mac_randomizer
 		echo.
 		call colorchar.exe /0f " Generated: "
@@ -315,7 +400,7 @@ title Batch Spoofer 1.0.0 - Developed By TUX
 		reg add !interface_registry_location! /v NetworkAddress /t REG_SZ /d "!set_mac!"
 		echo  Enabling "!interface_description!"...
 		netsh interface set interface name="!interface_id!" admin=enabled >nul
-		call colorchar.exe /0a " Completed."
+		call colorchar.exe /0a " Completed"
 		timeout /t 3 >nul
 		set macspoofingchoice=
 		cls
@@ -544,7 +629,7 @@ title Batch Spoofer 1.0.0 - Developed By TUX
 	
 	:mac_randomizer
 	set allowed_mac_char_list_obliged=EA26
-	set allowed_mac_char_list=123456789ABCDEF
+	set allowed_mac_char_list=0123456789ABCDEF
 	
 	set set_mac=
 	
@@ -560,7 +645,7 @@ title Batch Spoofer 1.0.0 - Developed By TUX
 	) 
 	goto :eof
 	:index_for_mac_calc_1
-		set /a index_for_mac=(!random!) %% 15
+		set /a index_for_mac=(!random!) %% 16
 	goto :eof
 	:set_mac_char_1
 		set set_mac=!set_mac!!allowed_mac_char_list:~%1,1!
@@ -571,3 +656,44 @@ title Batch Spoofer 1.0.0 - Developed By TUX
 	:set_mac_char_2
 		set set_mac=!set_mac!!allowed_mac_char_list_obliged:~%1,1!
 	goto :eof
+	
+	
+	
+	:create_string
+	set /a takeaway=4
+	set string=%2
+	echo !string!>var.txt
+	
+	for /f "useback tokens=*" %%a in ( '%string%' ) do (
+	if !string!==%%~a (
+	set /a takeaway=2
+	)
+	
+	set string=%%~a 
+	
+	)
+	set %1=!string!
+	
+	for %%I in ( var.txt ) do (
+	set /a %1_length=%%~zI - !takeaway!
+	)
+	del var.txt
+	goto :eof
+	
+	
+	:validate_mac_char
+		set allowed_mac_char_list_obliged_extended=EA26ea
+		set allowed_mac_char_list_extended=0123456789ABCDEFabcdef
+		set valid=false
+		
+		for /l %%a in ( 0, 1, 21) do (
+			if  "%~1" == "!allowed_mac_char_list_extended:~%%a,1!" (
+				set valid=true
+				goto :eof
+			)
+		
+		
+		)
+
+	goto :eof
+	
