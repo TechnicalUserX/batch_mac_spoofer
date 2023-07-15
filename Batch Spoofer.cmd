@@ -23,7 +23,7 @@ title Batch Spoofer 1.1.0 - Developed By TUX
 	if %errorLevel% == 0 (
 		set privilege_level=administrator
 		cd !current_directory!
-		cd BF_Files
+		cd /D %~dp0
 		del attempt.xml >nul
 		del infogate.xml >nul
 		cls
@@ -38,7 +38,7 @@ title Batch Spoofer 1.1.0 - Developed By TUX
 	
 	if %privilege_level% neq administrator (
 		echo.
-		call colorchar.exe /0c " Administrator Privileges required to use this program..."
+		call colorchar.exe /0c " Administrator Privileges are required to use this program..."
 		echo.
 		timeout /t 3 >nul
 		exit
@@ -61,7 +61,7 @@ title Batch Spoofer 1.1.0 - Developed By TUX
 	call colorchar.exe /0f ")"
 	echo.
 	echo.
-	echo  Making !interface_1_description! as default Interface...
+	echo  Making !interface_1_description! the default Interface...
 	set interface_id=!interface_1_id!
 	set interface_description=!interface_1_description!
 	set interface_mac=!interface_1_mac!
@@ -153,7 +153,7 @@ title Batch Spoofer 1.1.0 - Developed By TUX
 	echo.
 	echo.
 	echo  [--------------------------------------------------------------------------------------------------------------------------]
-	call colorchar.exe /0b "    Interafe Management Commands"
+	call colorchar.exe /0b "    Interface Management Commands"
 	echo.
 	echo.  
 	echo    - select interface              : Choose another interface
@@ -337,7 +337,7 @@ title Batch Spoofer 1.1.0 - Developed By TUX
 			if "%%a" == "1" (
 			
 				if "!manual_mac_check:~%%a,1!" neq "E" if "!manual_mac_check:~%%a,1!" neq "e" if "!manual_mac_check:~%%a,1!" neq "A" if "!manual_mac_check:~%%a,1!" neq "a" if "!manual_mac_check:~%%a,1!" neq "6" if "!manual_mac_check:~%%a,1!" neq "2" (
-					call colorchar.exe /0c " Second character is not matching the criteria, please use E, A, 2, or 6
+					call colorchar.exe /0c " Second character does not match the criteria, please use E, A, 2, or 6
 					timeout /t 3 >nul
 					set macspoofingchoice=
 					cls
