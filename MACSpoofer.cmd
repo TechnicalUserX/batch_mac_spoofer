@@ -23,6 +23,7 @@ title Batch Spoofer 1.1.0 - Developed By TUX
 	if %errorLevel% == 0 (
 		set privilege_level=administrator
 		cd /D %~dp0
+                cd BF_Files
 		del attempt.xml >nul
 		del infogate.xml >nul
 		cls
