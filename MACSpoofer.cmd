@@ -358,19 +358,10 @@ title Batch Spoofer 1.1.0 - Developed By TUX
 		
 		)
                
-                echo Would you like to save your MAC address to a file?
-                echo 1) Yes
-                echo 2) No
-                set /p macsavechoice=
 		echo.
 		call colorchar.exe /0f " Defined MAC: "
-                if %macsaveshoice%==1 (
-                call colorchar.exe /0a "!manual_mac!" > SavedAddresses.txt
-                )else (
-		call colorchar.exe /0a "!manual_mac!"
-                )
+                call colorchar.exe /0a "!manual_mac!"
 		echo.
-
 		echo.
 		echo  Disabling "!interface_description!"...
 		netsh interface set interface name="!interface_id!" admin=disabled >nul	
@@ -401,17 +392,7 @@ title Batch Spoofer 1.1.0 - Developed By TUX
 		call :mac_randomizer
 		echo.
 		call colorchar.exe /0f " Generated: "
-		echo Would you like to save your MAC address to a file?
-                echo 1) Yes
-                echo 2) No
-                set /p macsavechoice=
-		echo.
-		call colorchar.exe /0f " Defined MAC: "
-                if %macsaveshoice%==1 (
-                call colorchar.exe /0a "!set_mac!" > SavedAddresses.txt
-                )else (
 		call colorchar.exe /0a "!set_mac!"
-                )
 		echo.
 		echo  Disabling "!interface_description!"...
 		netsh interface set interface name="!interface_id!" admin=disabled >nul	
