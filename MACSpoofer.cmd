@@ -302,7 +302,7 @@ title Batch Spoofer 1.1.0 - Developed By TUX
 		set allowed_mac_char_list=0123456789ABCDEF
 		cls
 		echo.
-		echo  Type the MAC without semicolons
+		echo  Type the MAC without colons
 		echo.
 		echo  [-------------------------------------------------------------------------]
 		call colorchar.exe /0f "   Example format: "
@@ -357,9 +357,18 @@ title Batch Spoofer 1.1.0 - Developed By TUX
 		
 		
 		)
+               
+                echo Would you like to save your MAC address to a file?
+                echo 1) Yes
+                echo 2) No
+                set /p macsavechoice=
 		echo.
 		call colorchar.exe /0f " Defined MAC: "
+                if %macsaveshoice%==1 (
+                call colorchar.exe /0a "!manual_mac!" > SavedAddresses.txt
+                )else (
 		call colorchar.exe /0a "!manual_mac!"
+                )
 		echo.
 
 		echo.
