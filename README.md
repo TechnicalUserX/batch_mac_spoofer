@@ -24,7 +24,10 @@ You can perform the following operations:
 
 # Limitations
 
-This program has been tested on Windows 10 and Windows 11. Previous versions are not supported.
+- This program has been tested on Windows 10 and Windows 11. Previous versions are not supported.
+
+- This program uses ANSI escape sequences in the terminal which was added to the Windows Console in the Windows 10 version 1511, previous versions are not expected to run this program.
+
 
 # Disclaimer
 
